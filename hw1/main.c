@@ -55,18 +55,28 @@ int main() {
     
     // do your TRIS and LAT commands here
     TRISAbits.TRISA4 = 0; //Pin 12 is LED output
+    //TRISASET = 0x10;
     TRISBbits.TRISB4 = 1; //Pin 11 is pushbutton input
-    
+    //TRISBSET = 0x10;
+            
     LATAbits.LATA4 = 1;   //LED initilized off
-    
+    //LATASET = 0x10;
+            
     __builtin_enable_interrupts();
     
     while(1) {
-	    _CP0_SET_COUNT(0);
-        while(_CP0_GET_COUNT() < 40000000 * 0.5) {
-            ;
+        if(PORTBbits.RB4 == 0) {
+            LATAbits.LATA4 = 1;
         }
-        LATAbits.LATA4 = !PORTAbits.RA4;
+        else {
+            LATAbits.LATA4 = 1;
+        }
+	    //_CP0_SET_COUNT(0);
+        //while(_CP0_GET_COUNT() < 40000000 * 0.5) {
+        //    ;
+        //}
+        //LATAbits.LATA4 = !PORTAbits.RA4;
+        //LATAINV = 0x10;
     }
     
     
