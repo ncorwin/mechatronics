@@ -59,7 +59,7 @@ int main() {
     TRISBbits.TRISB4 = 1; //Pin 11 is pushbutton input
     //TRISBSET = 0x10;
             
-    LATAbits.LATA4 = 1;   //LED initilized off
+    LATAbits.LATA4 = 0;   //LED initilized off
     //LATASET = 0x10;
             
     __builtin_enable_interrupts();
@@ -68,15 +68,11 @@ int main() {
         if(PORTBbits.RB4 == 0) {
             LATAbits.LATA4 = 1;
         }
-        else {
-            LATAbits.LATA4 = 1;
+        else {            
+            LATAbits.LATA4 = 0;
+
         }
-	    //_CP0_SET_COUNT(0);
-        //while(_CP0_GET_COUNT() < 40000000 * 0.5) {
-        //    ;
-        //}
-        //LATAbits.LATA4 = !PORTAbits.RA4;
-        //LATAINV = 0x10;
+
     }
     
     
