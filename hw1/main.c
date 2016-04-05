@@ -69,8 +69,12 @@ int main() {
             LATAbits.LATA4 = 1;
         }
         else {            
-            LATAbits.LATA4 = 0;
-
+            //LATAbits.LATA4 = 0;
+            _CP0_SET_COUNT(0);
+            LATAbits.LATA4 = !PORTAbits.RA4;
+            while(_CP0_GET_COUNT() < 40000000 * 0.00028) {
+                ;
+            } 
         }
 
     }
