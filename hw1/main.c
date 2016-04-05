@@ -66,7 +66,7 @@ int main() {
     
     while(1) {
         if(PORTBbits.RB4 == 0) {
-            LATAbits.LATA4 = 1;
+            LATAbits.LATA4 = PORTAbits.RA4;
         }
         else {            
             //LATAbits.LATA4 = 0;
