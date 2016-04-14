@@ -158,7 +158,7 @@
 <pad name="2" x="0" y="1.905" drill="0.8128" shape="octagon"/>
 <pad name="1" x="-1.27" y="0" drill="0.8128" shape="octagon"/>
 <text x="3.175" y="0.635" size="1.27" layer="25" ratio="10">&gt;NAME</text>
-<text x="3.175" y="-1.27" size="1.27" layer="27" ratio="10">&gt;VALUE</text>
+<text x="-5.715" y="-3.81" size="1.27" layer="27" ratio="10">&gt;VALUE</text>
 </package>
 <package name="USB-A-H">
 <description>&lt;b&gt;USB Series A Hole Mounted&lt;/b&gt;</description>
@@ -3873,7 +3873,7 @@ body 5 x 5 mm, rectangle, grid 2.54 mm</description>
 <pad name="+" x="-1.27" y="0" drill="0.8128" diameter="1.6002"/>
 <pad name="-" x="1.27" y="0" drill="0.8128" diameter="1.6002" shape="octagon"/>
 <text x="-1.905" y="2.54" size="1.27" layer="25" ratio="10">&gt;NAME</text>
-<text x="3.048" y="-1.651" size="1.27" layer="27" ratio="10">&gt;VALUE</text>
+<text x="3.429" y="2.032" size="1.27" layer="27" ratio="10" rot="R270">&gt;VALUE</text>
 <rectangle x1="0.254" y1="-1.27" x2="0.762" y2="1.27" layer="51"/>
 </package>
 <package name="B45181B">

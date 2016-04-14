@@ -15553,6 +15553,20 @@ Used on FTDI breakouts</description>
 <text x="-10.16" y="12.7" size="1.27" layer="94">&gt;NAME</text>
 <text x="0" y="12.7" size="1.27" layer="94">&gt;VALUE</text>
 </symbol>
+<symbol name="A107673-ND">
+<pin name="3.OUT" x="-10.16" y="-10.16" length="middle" rot="R90"/>
+<pin name="2.IN" x="0" y="-10.16" length="middle" rot="R90"/>
+<pin name="1.OUT" x="10.16" y="-10.16" length="middle" rot="R90"/>
+<wire x1="0" y1="-7.62" x2="12.7" y2="-7.62" width="0.254" layer="94"/>
+<wire x1="12.7" y1="-7.62" x2="12.7" y2="7.62" width="0.254" layer="94"/>
+<wire x1="12.7" y1="7.62" x2="-12.7" y2="7.62" width="0.254" layer="94"/>
+<wire x1="-12.7" y1="7.62" x2="-12.7" y2="-7.62" width="0.254" layer="94"/>
+<wire x1="-12.7" y1="-7.62" x2="0" y2="-7.62" width="0.254" layer="94"/>
+<wire x1="0" y1="-7.62" x2="0" y2="-5.08" width="0.254" layer="94"/>
+<wire x1="0" y1="-5.08" x2="-5.08" y2="5.08" width="0.254" layer="94"/>
+<text x="-10.16" y="10.16" size="1.27" layer="94">Slide Switch</text>
+<text x="7.62" y="10.16" size="1.27" layer="94">&gt;NAME</text>
+</symbol>
 </symbols>
 <devicesets>
 <deviceset name="R-US_" prefix="R" uservalue="yes">
@@ -18835,6 +18849,7 @@ Source: www.kingbright.com</description>
 <connect gate="G$1" pin="D+" pad="D+"/>
 <connect gate="G$1" pin="D-" pad="D-"/>
 <connect gate="G$1" pin="GND" pad="GND"/>
+<connect gate="G$1" pin="ID" pad="ID"/>
 <connect gate="G$1" pin="VBUS" pad="VBUS"/>
 </connects>
 <technologies>
