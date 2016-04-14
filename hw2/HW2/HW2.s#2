@@ -13993,8 +13993,8 @@ Standard 5-pin 0.1" header. Use with straight break away headers (SKU : PRT-0011
 <part name="C2" library="HW2" deviceset="C-US" device="025-024X044" value="0.1uF"/>
 <part name="C3" library="HW2" deviceset="C-US" device="025-024X044" value="0.1uF"/>
 <part name="C4" library="HW2" deviceset="C-US" device="025-024X044" value="0.1uF"/>
-<part name="C5" library="HW2" deviceset="CPOL-US" device="ETR2" value="10uF"/>
-<part name="C6" library="HW2" deviceset="CPOL-US" device="ETR2" value="10uF"/>
+<part name="C5" library="HW2" deviceset="CPOL-US" device="B45181A" value="10uF"/>
+<part name="C6" library="HW2" deviceset="CPOL-US" device="B45181A" value="10uF"/>
 <part name="LED1" library="HW2" deviceset="LED" device="3MM" value="red"/>
 <part name="LED2" library="HW2" deviceset="LED" device="3MM" value="green"/>
 <part name="P+1" library="HW2" deviceset="+5V" device=""/>
