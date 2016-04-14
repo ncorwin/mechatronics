@@ -6,7 +6,7 @@
 <setting alwaysvectorfont="no"/>
 <setting verticaltext="up"/>
 </settings>
-<grid distance="0.1" unitdist="inch" unit="inch" style="lines" multiple="1" display="yes" altdistance="0.01" altunitdist="inch" altunit="inch"/>
+<grid distance="0.05" unitdist="inch" unit="inch" style="lines" multiple="1" display="yes" altdistance="0.025" altunitdist="inch" altunit="inch"/>
 <layers>
 <layer number="1" name="Top" color="4" fill="1" visible="yes" active="yes"/>
 <layer number="16" name="Bottom" color="1" fill="1" visible="yes" active="yes"/>
@@ -10605,6 +10605,15 @@ will be further integrated into the Sparkfun Library for other footprints.  It c
 <rectangle x1="4.826" y1="-0.254" x2="5.334" y2="0.254" layer="51"/>
 <rectangle x1="2.286" y1="-0.254" x2="2.794" y2="0.254" layer="51"/>
 <rectangle x1="-0.254" y1="-0.254" x2="0.254" y2="0.254" layer="51"/>
+<wire x1="-1.27" y1="1.27" x2="-1.27" y2="-1.27" width="0.127" layer="21"/>
+<wire x1="-1.27" y1="-1.27" x2="6.35" y2="-1.27" width="0.127" layer="21"/>
+<wire x1="6.35" y1="-1.27" x2="8.89" y2="-1.27" width="0.127" layer="21"/>
+<wire x1="8.89" y1="-1.27" x2="11.43" y2="-1.27" width="0.127" layer="21"/>
+<wire x1="11.43" y1="-1.27" x2="11.43" y2="1.27" width="0.127" layer="21"/>
+<wire x1="-1.27" y1="1.27" x2="11.43" y2="1.27" width="0.127" layer="21"/>
+<wire x1="8.89" y1="-1.27" x2="8.89" y2="-5.08" width="0.127" layer="21"/>
+<wire x1="8.89" y1="-5.08" x2="6.35" y2="-5.08" width="0.127" layer="21"/>
+<wire x1="6.35" y1="-5.08" x2="6.35" y2="-1.27" width="0.127" layer="21"/>
 </package>
 <package name="JST-5-PTH">
 <pad name="1" x="-4" y="0" drill="0.7" diameter="1.6"/>
@@ -21705,6 +21714,23 @@ Standard 15-pin 0.1" header. Use with straight break away headers (SKU : PRT-001
 <connect gate="G$1" pin="1.OSC1" pad="1"/>
 <connect gate="G$1" pin="2.GND" pad="2"/>
 <connect gate="G$1" pin="3.OSC2" pad="3"/>
+</connects>
+<technologies>
+<technology name=""/>
+</technologies>
+</device>
+</devices>
+</deviceset>
+<deviceset name="A107673-ND">
+<gates>
+<gate name="G$1" symbol="A107673-ND" x="0" y="0"/>
+</gates>
+<devices>
+<device name="" package="1X05_NO_SILK">
+<connects>
+<connect gate="G$1" pin="1.OUT" pad="2"/>
+<connect gate="G$1" pin="2.IN" pad="3"/>
+<connect gate="G$1" pin="3.OUT" pad="4"/>
 </connects>
 <technologies>
 <technology name=""/>
