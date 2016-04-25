@@ -60,6 +60,13 @@ void spi_read(unsigned short addr, char data[], int len) {
 }
 
 void setVoltage(char channel, char voltage) {
+    unsigned int buffer = 0x7000;
     
+    buffer |= channel << 15;
+    buffer |= voltage << 4;
     
+    CS = 0; 
+    spi_io((buffer & 0xFF00) >> 8);
+    spi_io(buffer & 0x00FF);
+    CS = 1;
 }
