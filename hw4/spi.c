@@ -1,3 +1,5 @@
+#include "spi.h"
+
 #define CS LATBbits.LATB15
 
 unsigned char spi_io(unsigned char o) {
@@ -26,41 +28,15 @@ void spi_init() {
   // setup spi1
   SPI1CON = 0;              // turn off the spi module and reset it
   SPI1BUF;                  // clear the rx buffer by reading from it
-  SPI1BRG = 0x3;            // baud rate to 10 MHz [SPI4BRG = (80000000/(2*desired))-1]
+  SPI1BRG = 10000;            // baud rate to 10 MHz [SPI4BRG = (80000000/(2*desired))-1]
   SPI1STATbits.SPIROV = 0;  // clear the overflow bit
   SPI1CONbits.CKE = 1;      // data changes when clock goes from hi to lo (since CKP is 0)
   SPI1CONbits.MSTEN = 1;    // master operation
   SPI1CONbits.ON = 1;       // turn on spi 1
 }
 
-// write len bytes to the ram, starting at the address addr
-void spi_write(unsigned short addr, const char data[], int len) {
-  int i = 0;
-  CS = 0;                        // enable the ram by lowering the chip select line
-  spi_io(0x2);                   // sequential write operation
-  spi_io((addr & 0xFF00) >> 8 ); // most significant byte of address
-  spi_io(addr & 0x00FF);         // the least significant address byte
-  for(i = 0; i < len; ++i) {
-    spi_io(data[i]);
-  }
-  CS = 1;                        // raise the chip select line, ending communication
-}
-
-// read len bytes from ram, starting at the address addr
-void spi_read(unsigned short addr, char data[], int len) {
-  int i = 0;
-  CS = 0;
-  spi_io(0x3);                   // ram read operation
-  spi_io((addr & 0xFF00) >> 8);  // most significant address byte
-  spi_io(addr & 0x00FF);         // least significant address byte
-  for(i = 0; i < len; ++i) {
-    data[i] = spi_io(0);         // read in the data
-  }
-  CS = 1;
-}
-
-void setVoltage(char channel, char voltage) {
-    unsigned int buffer = 0x7000;
+void setVoltage(char channel, unsigned char voltage) {
+    unsigned short buffer = 0x7000;
     
     buffer |= channel << 15;
     buffer |= voltage << 4;
