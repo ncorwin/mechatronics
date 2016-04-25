@@ -41,12 +41,26 @@ int main() {
     __builtin_enable_interrupts();
     
     spi_init();
+    i2c_master_setup();
     
     setVoltage(0, 0);
     
     makeWaveform();
     
     int i = 0;
+    
+    i2c_master_start();
+    i2c_master_send(0x40);
+    i2c_master_send(0x00);
+    i2c_master_send(0x00);
+    i2c_master_stop();
+
+    i2c_master_start();
+    i2c_master_send(0x40);
+    i2c_master_send(0x0A);
+    i2c_master_send(0b010);
+    i2c_master_stop();
+
     
     while(1) {
         
