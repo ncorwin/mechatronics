@@ -7,15 +7,15 @@
 
 #define NUMSAMPS 1000
 
-unsigned char Sine[NUMSAMPS];
-unsigned char Sawtooth[NUMSAMPS];
+static volatile unsigned char Sine[NUMSAMPS];
+static volatile unsigned char Sawtooth[NUMSAMPS];
 
 void makeWaveform() {
     int i = 0;
     int center = 255/2, A = 255/2;
     for (i = 0; i < NUMSAMPS; i++) {
-        Sine[i] = (unsigned char) (center + A * sin(2 * 3.14 * (i / NUMSAMPS)));
-        Sawtooth[i] = (unsigned char) 255 * (i / NUMSAMPS);
+        Sine[i] = (unsigned char)center + A * sin( 2 * 3.14 * i / (1000));
+        Sawtooth[i] = (unsigned char) 255 * i /1000;
 
     }
 }
@@ -43,37 +43,41 @@ int main() {
     spi_init();
     i2c_master_setup();
     
-    setVoltage(0, 0);
-    
     makeWaveform();
     
-    int i = 0;
+    unsigned char volts = 0;
+    char output = 0;
+    setVoltage(output, volts);
     
-    i2c_master_start();
-    i2c_master_send(0x40);
-    i2c_master_send(0x00);
-    i2c_master_send(0x00);
-    i2c_master_stop();
+    int a = 0;
+    
+    //i2c_master_start();
+    //i2c_master_send(0x40);
+    //i2c_master_send(0x00);
+    //i2c_master_send(0x00);
+    //i2c_master_stop();
 
-    i2c_master_start();
-    i2c_master_send(0x40);
-    i2c_master_send(0x0A);
-    i2c_master_send(0b010);
-    i2c_master_stop();
+    //i2c_master_start();
+    //i2c_master_send(0x40);
+    //i2c_master_send(0x0A);
+    //i2c_master_send(0b010);
+    //i2c_master_stop();
 
     
     while(1) {
         
         if (_CP0_GET_COUNT() > 24000) {
-            setVoltage(0, Sine[i]);
-            setVoltage(1, Sawtooth[i]);
-            
-            i = i + 1;
-            if (i > NUMSAMPS) {
-                i = 0;
-            }
-            
+            a++;
+            //LATAbits.LATA4 = !LATAbits.LATA4;
+            //LATBbits.LATB7 = !LATBbits.LATB7;
+            setVoltage(0, Sine[a]);
+            setVoltage(1, Sawtooth[a]);
+            //setVoltage(0,255);
+   
             _CP0_SET_COUNT(0);
+        }
+        if (a > NUMSAMPS-2) {
+                a = 0;
         }
     }
 }
