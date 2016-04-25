@@ -17,6 +17,7 @@
       <itemPath>spi.h</itemPath>
       <itemPath>i2c_master.c</itemPath>
       <itemPath>i2c_master.h</itemPath>
+      <itemPath>pic_config.h</itemPath>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
                    displayName="Important Files"
