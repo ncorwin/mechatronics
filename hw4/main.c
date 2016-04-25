@@ -66,7 +66,7 @@ int main() {
     
     while(1) {
         
-        if (_CP0_GET_COUNT() > 24000) {
+        if (_CP0_GET_COUNT() > 2400) {
             a++;
             //LATAbits.LATA4 = !LATAbits.LATA4;
             //LATBbits.LATB7 = !LATBbits.LATB7;
