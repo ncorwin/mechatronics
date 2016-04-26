@@ -35,7 +35,11 @@ void i2c_master_send(unsigned char byte) { // send a byte to slave
 
 unsigned char i2c_master_recv(void) { // receive a byte from the slave
     I2C2CONbits.RCEN = 1;             // start receiving data
-    while(!I2C2STATbits.RBF) { ; }    // wait to receive the data
+    while(!I2C2STATbits.RBF) { 
+        Nop();
+        Nop();
+        Nop();    
+     }    // wait to receive the data
     return I2C2RCV;                   // read and return the data
 }
 
@@ -49,4 +53,89 @@ void i2c_master_ack(int val) {        // sends ACK = 0 (slave should send anothe
 void i2c_master_stop(void) {          // send a STOP:
   I2C2CONbits.PEN = 1;                // comm is complete and master relinquishes bus
   while(I2C2CONbits.PEN) { ; }        // wait for STOP to complete
+}
+
+void expander_init(void) {
+    i2c_master_start(); // make the start bit
+    i2c_master_send(20<1|0); // write the address, shifted left by 1, or'ed with a 0 to indicate writing
+    i2c_master_send(0x00); // the register to write to
+    i2c_master_send(0xF0); // the value to put in the register
+    i2c_master_stop(); // make the stop bit
+}
+
+int expander_read(void) {
+    int out = 0;
+    
+    i2c_master_start(); // make the start bit
+    i2c_master_send(20<1|0); // write the address, shifted left by 1, or'ed with a 0 to indicate writing
+    i2c_master_send(0x09); // the register to read from
+    i2c_master_restart(); // make the restart bit
+    i2c_master_send(20<1|1); // write the address, shifted left by 1, or'ed with a 1 to indicate reading
+    char r = i2c_master_recv(); // save the value returned
+    i2c_master_ack(1); // make the ack so the slave knows we got it
+    i2c_master_stop(); // make the stop bit
+    
+    r = r & 0x01;
+    
+    if (r == 0) {
+        out = 1;
+    }
+    else {
+        out = 0;
+    }
+    
+    return out;
+}
+
+
+void write_exp(unsigned char addr, unsigned char data){
+   
+    i2c_master_start();
+    i2c_master_send(0x20 << 1 | 0);
+    i2c_master_send(addr);
+    i2c_master_send(data);
+    i2c_master_stop();
+
+}
+unsigned char read_exp(unsigned char addr){
+    unsigned char result;
+    i2c_master_start();
+    i2c_master_send(0x20 << 1 | 0);
+    i2c_master_send(addr);
+    i2c_master_restart();
+    i2c_master_send(0x20 << 1 | 1);
+    result = i2c_master_recv();
+    i2c_master_ack(1);
+    i2c_master_stop();
+    return result;
+}
+
+void init_exp(void){
+    write_exp(0x05,0x38); //IOCON
+    write_exp(0x00,0xF0); //IODIR
+    write_exp(0x0A,0x00); //OLAT
+    
+}
+void set_exp(int pin, int lvl){
+    unsigned char out = 1;
+    unsigned char test = read_exp(0x09); //GPIO
+    
+    out = out << pin;
+    
+    if (lvl == 1) {
+        write_exp(0x0A, test | out); 
+    }
+    else if (lvl == 0)  {
+        write_exp(0x0A, test & (~out)); 
+    }
+
+}
+unsigned char get_exp(int pin){
+    int i;
+    unsigned char out = 1;
+    unsigned char test = read_exp(0x09); 
+    
+    out = out << pin;
+    
+    return (out & test) >> pin;
 }

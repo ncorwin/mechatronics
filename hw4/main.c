@@ -42,37 +42,37 @@ int main() {
     
     spi_init();
     i2c_master_setup();
+    init_exp();
     
     makeWaveform();
     
     unsigned char volts = 0;
     char output = 0;
     setVoltage(output, volts);
-    
+      
     int a = 0;
-    
-    //i2c_master_start();
-    //i2c_master_send(0x40);
-    //i2c_master_send(0x00);
-    //i2c_master_send(0x00);
-    //i2c_master_stop();
-
-    //i2c_master_start();
-    //i2c_master_send(0x40);
-    //i2c_master_send(0x0A);
-    //i2c_master_send(0b010);
-    //i2c_master_stop();
-
+    int test = 0;
     
     while(1) {
+        
+        //LATAbits.LATA4 = !LATAbits.LATA4;
+        
+        if (get_exp(7) == 1) {
+            //LATAbits.LATA4 = 1;
+            set_exp(0, 1); 
+        }
+        else {
+            //LATAbits.LATA4 = 0;
+            set_exp(0, 0); 
+        }
+        
+
         
         if (_CP0_GET_COUNT() > 2400) {
             a++;
             //LATAbits.LATA4 = !LATAbits.LATA4;
-            //LATBbits.LATB7 = !LATBbits.LATB7;
             setVoltage(0, Sine[a]);
             setVoltage(1, Sawtooth[a]);
-            //setVoltage(0,255);
    
             _CP0_SET_COUNT(0);
         }

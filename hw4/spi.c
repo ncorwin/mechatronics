@@ -36,6 +36,6 @@ void setVoltage(char channel, unsigned char voltage) {
     CS = 0;
     spi_io((buffer & 0xFF00) >> 8);
     spi_io(buffer & 0x00FF);
-    LATAbits.LATA4 = !LATAbits.LATA4;
+    //LATAbits.LATA4 = !LATAbits.LATA4;
     CS = 1;
 }

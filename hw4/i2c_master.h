@@ -15,4 +15,14 @@ unsigned char i2c_master_recv(void);      // receive a byte of data
 void i2c_master_ack(int val);             // send an ACK (0) or NACK (1)
 void i2c_master_stop(void);               // send a stop
 
+void expander_init(void);
+int expander_read(void);
+
+void write_exp(unsigned char addr, unsigned char data);
+unsigned char read_exp(unsigned char addr);
+void init_exp(void);
+void set_exp(int pin, int lvl);
+unsigned char get_exp(int pin);
+
+
 #endif
