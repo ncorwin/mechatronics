@@ -117,7 +117,7 @@ void init_exp(void){
     
 }
 void set_exp(int pin, int lvl){
-    unsigned char out = 1;
+    unsigned char out = 0x01;
     unsigned char test = read_exp(0x09); //GPIO
     
     out = out << pin;
@@ -131,8 +131,7 @@ void set_exp(int pin, int lvl){
 
 }
 unsigned char get_exp(int pin){
-    int i;
-    unsigned char out = 1;
+    unsigned char out = 0x01;
     unsigned char test = read_exp(0x09); 
     
     out = out << pin;

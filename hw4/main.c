@@ -57,27 +57,32 @@ int main() {
         
         //LATAbits.LATA4 = !LATAbits.LATA4;
         
-        if (get_exp(7) == 1) {
-            //LATAbits.LATA4 = 1;
-            set_exp(0, 1); 
-        }
-        else {
-            //LATAbits.LATA4 = 0;
-            set_exp(0, 0); 
-        }
-        
-
-        
         if (_CP0_GET_COUNT() > 2400) {
             a++;
             //LATAbits.LATA4 = !LATAbits.LATA4;
             setVoltage(0, Sine[a]);
             setVoltage(1, Sawtooth[a]);
-   
+               
             _CP0_SET_COUNT(0);
         }
         if (a > NUMSAMPS-2) {
                 a = 0;
+        }
+        
+        while(_CP0_GET_COUNT() < 2400) {
+            
+            if (get_exp(7) == 0) {
+                break;
+            }
+        }
+        
+        if (get_exp(7) == 1) {
+            LATAbits.LATA4 = 0;
+            set_exp(0, 0); 
+        }
+        else {
+            LATAbits.LATA4 = 1;
+            set_exp(0, 1); 
         }
     }
 }
