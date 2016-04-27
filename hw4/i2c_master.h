@@ -3,6 +3,8 @@
 
 #include <xc.h>           // processor SFR definitions
 #include <sys/attribs.h>  // __ISR macro
+
+#define EXPANDER 0x40
 // Header file for i2c_master_noint.c
 // helps implement use I2C1 as a master without using interrupts
 
@@ -14,9 +16,6 @@ void i2c_master_send(unsigned char byte); // send a byte (either an address or d
 unsigned char i2c_master_recv(void);      // receive a byte of data
 void i2c_master_ack(int val);             // send an ACK (0) or NACK (1)
 void i2c_master_stop(void);               // send a stop
-
-void expander_init(void);
-int expander_read(void);
 
 void write_exp(unsigned char addr, unsigned char data);
 unsigned char read_exp(unsigned char addr);

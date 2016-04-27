@@ -10,7 +10,7 @@ void i2c_master_setup(void) {
   ANSELBbits.ANSB2 = 0;
   ANSELBbits.ANSB3 = 0;
   
-  I2C2BRG = 53;// I2CBRG = [1/(2*Fsck) - PGD]*Pblck - 2 
+  I2C2BRG = 90;// I2CBRG = [1/(2*Fsck) - PGD]*Pblck - 2 
   I2C2CONbits.ON = 1;               // turn on the I2C1 module
 }
 
@@ -55,43 +55,10 @@ void i2c_master_stop(void) {          // send a STOP:
   while(I2C2CONbits.PEN) { ; }        // wait for STOP to complete
 }
 
-void expander_init(void) {
-    i2c_master_start(); // make the start bit
-    i2c_master_send(20<1|0); // write the address, shifted left by 1, or'ed with a 0 to indicate writing
-    i2c_master_send(0x00); // the register to write to
-    i2c_master_send(0xF0); // the value to put in the register
-    i2c_master_stop(); // make the stop bit
-}
-
-int expander_read(void) {
-    int out = 0;
-    
-    i2c_master_start(); // make the start bit
-    i2c_master_send(20<1|0); // write the address, shifted left by 1, or'ed with a 0 to indicate writing
-    i2c_master_send(0x09); // the register to read from
-    i2c_master_restart(); // make the restart bit
-    i2c_master_send(20<1|1); // write the address, shifted left by 1, or'ed with a 1 to indicate reading
-    char r = i2c_master_recv(); // save the value returned
-    i2c_master_ack(1); // make the ack so the slave knows we got it
-    i2c_master_stop(); // make the stop bit
-    
-    r = r & 0x01;
-    
-    if (r == 0) {
-        out = 1;
-    }
-    else {
-        out = 0;
-    }
-    
-    return out;
-}
-
-
 void write_exp(unsigned char addr, unsigned char data){
    
     i2c_master_start();
-    i2c_master_send(0x20 << 1 | 0);
+    i2c_master_send(EXPANDER << 1);
     i2c_master_send(addr);
     i2c_master_send(data);
     i2c_master_stop();
@@ -100,10 +67,10 @@ void write_exp(unsigned char addr, unsigned char data){
 unsigned char read_exp(unsigned char addr){
     unsigned char result;
     i2c_master_start();
-    i2c_master_send(0x20 << 1 | 0);
+    i2c_master_send(EXPANDER << 1);
     i2c_master_send(addr);
     i2c_master_restart();
-    i2c_master_send(0x20 << 1 | 1);
+    i2c_master_send(EXPANDER << 1 | 0x01);
     result = i2c_master_recv();
     i2c_master_ack(1);
     i2c_master_stop();
@@ -112,7 +79,7 @@ unsigned char read_exp(unsigned char addr){
 
 void init_exp(void){
     write_exp(0x05,0x38); //IOCON
-    write_exp(0x00,0xF0); //IODIR
+    write_exp(0x00,0x0F); //IODIR
     write_exp(0x0A,0x00); //OLAT
     
 }
