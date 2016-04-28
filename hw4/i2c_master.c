@@ -58,7 +58,7 @@ void i2c_master_stop(void) {          // send a STOP:
 void write_exp(unsigned char addr, unsigned char data){
    
     i2c_master_start();
-    i2c_master_send(EXPANDER << 1);
+    i2c_master_send(EXPANDER | 0);
     i2c_master_send(addr);
     i2c_master_send(data);
     i2c_master_stop();
@@ -67,10 +67,10 @@ void write_exp(unsigned char addr, unsigned char data){
 unsigned char read_exp(unsigned char addr){
     unsigned char result;
     i2c_master_start();
-    i2c_master_send(EXPANDER << 1);
+    i2c_master_send(EXPANDER | 0);
     i2c_master_send(addr);
     i2c_master_restart();
-    i2c_master_send(EXPANDER << 1 | 0x01);
+    i2c_master_send(EXPANDER | 1);
     result = i2c_master_recv();
     i2c_master_ack(1);
     i2c_master_stop();
@@ -78,8 +78,8 @@ unsigned char read_exp(unsigned char addr){
 }
 
 void init_exp(void){
-    write_exp(0x05,0x38); //IOCON
-    write_exp(0x00,0x0F); //IODIR
+    //write_exp(0x05,0x38); //IOCON
+    write_exp(0x00,0xF0); //IODIR
     write_exp(0x0A,0x00); //OLAT
     
 }
