@@ -19,21 +19,24 @@ int main() {
     TRISBbits.TRISB4 = 1; //Pin 11 is pushbutton input      
     LATAbits.LATA4 = 0;   //LED initilized off
     
-    i2c_master_setup();
-    //LCD_init();
+    SPI1_init();
+    LCD_init();
 
          
     __builtin_enable_interrupts();
     
     //LCD_clearScreen(WHITE);
+    
+    //LCD_drawCharacter(10,10,'d',BLUE);
+    
+    LCD_drawPixel(0,0,RED);
+    
     LATAbits.LATA4 = 1;
-    //LCD_Draw_Character(10,10,'d',BLUE);
     
     char c[100];
     int vari = 1337;
     sprintf(c,"Hello World %d!",vari);
     
-    LCD_drawString(28,32,&c,BLUE);
-    //LCD_drawPixel(0,0,RED);
+    //LCD_drawString(28,32,&c,BLUE);
     while(1){;}
 }
