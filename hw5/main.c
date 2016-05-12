@@ -18,25 +18,39 @@ int main() {
     TRISAbits.TRISA4 = 0; //Pin 12 is LED output
     TRISBbits.TRISB4 = 1; //Pin 11 is pushbutton input      
     LATAbits.LATA4 = 0;   //LED initilized off
-    
+        
     SPI1_init();
     LCD_init();
-
-         
-    __builtin_enable_interrupts();
     
-    //LCD_clearScreen(WHITE);
+    __builtin_enable_interrupts();
+
+    
+    LCD_clearScreen(WHITE);
     
     //LCD_drawCharacter(10,10,'d',BLUE);
-    
-    LCD_drawPixel(0,0,RED);
-    
-    LATAbits.LATA4 = 1;
+    //LCD_drawPixel(1,1,RED);
+    //LATAbits.LATA4 = 1;
     
     char c[100];
     int vari = 1337;
     sprintf(c,"Hello World %d!",vari);
     
-    //LCD_drawString(28,32,&c,BLUE);
-    while(1){;}
+    LCD_drawString(28,32,&c,BLUE);
+    
+    unsigned short testx, testy;
+    
+    testx = 10;
+    testy = 10;
+    
+    while(1){
+        
+        //LCD_drawPixel(testx,testy,RED);
+        //testx = testx + 1;
+        //testy = testy + 1;
+        
+        if(PORTBbits.RB4 == 0) {
+            LATAbits.LATA4 = !PORTAbits.RA4;
+        }
+    
+    }
 }

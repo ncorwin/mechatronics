@@ -55,7 +55,7 @@ void LCD_data(unsigned char dat) {
     LATBbits.LATB15 = 1; // DAT
     LATBbits.LATB7 = 0; // CS
     spi_io(dat);
-    LATBbits.LATB7 = 1; // CS
+    LATBbits.LATB7 = 1; // CSMAGENTA
 }
 
 void LCD_data16(unsigned short dat) {
@@ -207,9 +207,13 @@ void LCD_drawCharacter(unsigned short x, unsigned short y, char character,unsign
             }
         }
     }
+            
+            
+    
+    
 }
 
-void LCD_drawString(unsigned short x, unsigned short y, char *string,unsigned short color) {
+void LCD_drawString(unsigned short x, unsigned short y, char *string, unsigned short color){
     int i = 0;
     int x_start = x;
     int y_start = y;

@@ -1,16 +1,16 @@
-#include "i2c_master.h"
-
 // I2C Master utilities, 100 kHz, using polling rather than interrupts
 // The functions must be callled in the correct order as per the I2C protocol
 // Change I2C1 to the I2C channel you are using
 // I2C pins need pull-up resistors, 2k-10k
-
+#include "i2c_master.h"
+#include <xc.h>
 void i2c_master_setup(void) {
-  
   ANSELBbits.ANSB2 = 0;
   ANSELBbits.ANSB3 = 0;
-  
-  I2C2BRG = 90;// I2CBRG = [1/(2*Fsck) - PGD]*Pblck - 2 
+  //TRISBbits.TRISB2 = 0;
+  //TRISBbits.TRISB3 = 0;
+  I2C2BRG = 2000; //some number for 100kHz;            // I2CBRG = [1/(2*Fsck) - PGD]*Pblck - 2 
+                                    // look up PGD for your PIC32 (104ns)  (1/(2*100,000)- .000000104)*48000000 -2
   I2C2CONbits.ON = 1;               // turn on the I2C1 module
 }
 
@@ -35,11 +35,13 @@ void i2c_master_send(unsigned char byte) { // send a byte to slave
 
 unsigned char i2c_master_recv(void) { // receive a byte from the slave
     I2C2CONbits.RCEN = 1;             // start receiving data
-    while(!I2C2STATbits.RBF) { 
+
+    while(!I2C2STATbits.RBF) {
         Nop();
         Nop();
-        Nop();    
-     }    // wait to receive the data
+        Nop();
+    }    // wait to receive the data
+    
     return I2C2RCV;                   // read and return the data
 }
 
@@ -55,53 +57,66 @@ void i2c_master_stop(void) {          // send a STOP:
   while(I2C2CONbits.PEN) { ; }        // wait for STOP to complete
 }
 
-void write_exp(unsigned char addr, unsigned char data){
+void init_exp(void){
+    write_exp(EXPADD,0xF0,0x00); 
+    write_exp(EXPADD,0x00,0x0A); 
+}
+void write_exp(unsigned char addr, unsigned char data, unsigned char regist){
    
     i2c_master_start();
-    i2c_master_send(EXPANDER | 0);
-    i2c_master_send(addr);
+    i2c_master_send(addr<<1|0);
+    i2c_master_send(regist);
     i2c_master_send(data);
     i2c_master_stop();
-
 }
-unsigned char read_exp(unsigned char addr){
+
+unsigned char read_exp(unsigned char addr,unsigned char regist){
     unsigned char result;
+     
     i2c_master_start();
-    i2c_master_send(EXPANDER | 0);
-    i2c_master_send(addr);
+    i2c_master_send(addr<<1|0);
+    i2c_master_send(regist);
     i2c_master_restart();
-    i2c_master_send(EXPANDER | 1);
+    i2c_master_send(addr<<1|1);
+    
+    //LATAbits.LATA4 = 1;
     result = i2c_master_recv();
+    //LATAbits.LATA4 = 1;
     i2c_master_ack(1);
     i2c_master_stop();
     return result;
 }
 
-void init_exp(void){
-    //write_exp(0x05,0x38); //IOCON
-    write_exp(0x00,0xF0); //IODIR
-    write_exp(0x0A,0x00); //OLAT
-    
-}
-void set_exp(int pin, int lvl){
+void set_exp_pin(int pin, int val){
     unsigned char out = 0x01;
-    unsigned char test = read_exp(0x09); //GPIO
-    
+    LATAbits.LATA4 = 0; 
+    unsigned char current = read_exp(EXPADD,0x09);
+
+    //unsigned char test = read_exp(0x09);
     out = out << pin;
-    
-    if (lvl == 1) {
-        write_exp(0x0A, test | out); 
+    //LATAbits.LATA4 = 1; 
+    if (val == 1){
+        write_exp(EXPADD,current|out,0x0A);
+        //LATAbits.LATA4 = 1;
     }
-    else if (lvl == 0)  {
-        write_exp(0x0A, test & (~out)); 
+    else if (val == 0){
+        write_exp(EXPADD,current&(~out),0x0A);
+        LATAbits.LATA4 = 1;
     }
 
+        
 }
-unsigned char get_exp(int pin){
+
+unsigned char read_exp_pin(int pin){
     unsigned char out = 0x01;
-    unsigned char test = read_exp(0x09); 
+    unsigned char data;
+
+    out = out<<pin;
+    data = read_exp(EXPADD,0x09);
     
-    out = out << pin;
-    
-    return (out & test) >> pin;
+    data = (data&out)>>pin;
+    //if (data==1){
+    //    LATAbits.LATA4 = 1; 
+    //}
+    return data;
 }
