@@ -6,6 +6,11 @@
 
 #define EXPANDER 0x40
 #define IMU 0b1101011
+
+//extern char add; // make available for use in main function
+//extern char reg; 
+//extern unsigned char data[30];
+//extern char len;
 // Header file for i2c_master_noint.c
 // helps implement use I2C1 as a master without using interrupts
 
@@ -24,10 +29,11 @@ void init_exp(void);
 void set_exp(int pin, int lvl);
 unsigned char get_exp(int pin);
 
+
+
 void write_imu(unsigned char addr, unsigned char data);
-unsigned char read_imu(unsigned char addr);
+void I2C_multiread(char add, char reg, unsigned char * data, char len);
 void init_imu(void);
-void set_imu(int pin, int lvl);
-unsigned char get_imu(int pin);
-void I2C_read_multiple(char address, char register, unsigned char * data, char length);
+unsigned char getWho();
+
 #endif

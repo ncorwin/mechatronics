@@ -133,8 +133,22 @@ void I2C_multiread(char add, char reg, unsigned char * data, char len){
 }
 
 void init_imu(void){
-    //write_exp(0x05,0x38); //IOCON
-    write_imu(0x10,0x80); //IODIR
-    write_imu(0x11,0x84); //OLAT
+    write_imu(0x10,0x80); 
+    write_imu(0x11,0x84); 
+    
+}
+
+unsigned char getWho(){
+    //char add = 0x20;//0b0100000;
+    unsigned char r = 0x00;
+    i2c_master_start(); // make the start bit
+    i2c_master_send(0x6B<<1|0); // write the address, shifted left by 1, or'ed with a 0 to indicate writing
+    i2c_master_send(0x0F); // the register to read from
+    i2c_master_restart(); // make the restart bit
+    i2c_master_send(0x6B<<1|1); // write the address, shifted left by 1, or'ed with a 1 to indicate reading
+    r = i2c_master_recv();
+    i2c_master_ack(1); // make the ack so the slave knows we got it
+    i2c_master_stop(); // make the stop bit
+    return r;
     
 }
