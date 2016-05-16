@@ -4,7 +4,7 @@
 #include <math.h>
 
 //Global Variables
-signed short temp = 0,accel_x= 0, accel_y=0, accel_z=0, gyro_x=0, gyro_y=0, gyro_z=0;
+signed short temp = 0, accel_x= 0, accel_y=0, accel_z=0, gyro_x=0, gyro_y=0, gyro_z=0;
 
 int main() {
 
@@ -36,9 +36,11 @@ int main() {
     unsigned char val = 0x00;
     //int level = 0, i = 0;
     
-    unsigned char data[30];
+    signed short test1 = 2.75;
     
-    char ax[100], ay[100], az[100], gx[100], gy[100], gz[100];
+    //unsigned char data[30];
+    
+    unsigned char tp[100], ax[100], ay[100], az[100], gx[100], gy[100], gz[100];
         
     while(1){
         
@@ -55,32 +57,36 @@ int main() {
             
             _CP0_SET_COUNT(0);
             
-            I2C_multiread(0x6B, 0x20, data, 14); //may not even need to pass data here and can just save in the externed variable
+            I2C_multiread(0x6B, 0x20, data, 2); //may not even need to pass data here and can just save in the externed variable
             temp =(data[1]<< 8) | data[0];
-            gyro_x =(data[3]<< 8) | data[2];
-            gyro_y =(data[5]<< 8) | data[4];
-            gyro_z =(data[7]<< 8) | data[6];
-            accel_x =(data[9]<< 8) | data[8];
-            accel_y =(data[11]<< 8) | data[10];
-            accel_z =(data[13]<< 8) | data[12];
+//            gyro_x =(data[3]<< 8) | data[2];
+//            gyro_y =(data[5]<< 8) | data[4];
+//            gyro_z =(data[7]<< 8) | data[6];
+//            accel_x =(data[9]<< 8) | data[8];
+//            accel_y =(data[11]<< 8) | data[10];
+//            accel_z =(data[13]<< 8) | data[12];
             
-            sprintf(ax,"Accel X: %f", accel_x);
-            sprintf(ay,"Accel Y: %f", accel_y);
-            sprintf(az,"Accel Z: %f", accel_z);
-            sprintf(gx,"Gyro X: %f", gyro_x);
-            sprintf(gy,"Gyro Y: %f", gyro_y);
-            sprintf(gz,"Gyro Z: %f", gyro_z);
+            sprintf(tp,"temp: %1.2f", (float)(temp + (0xFFFF/2)+1)/0xFFFF);
+            
+            sprintf(ax,"Accel X: %1.2f", (float)(accel_x + (0xFFFF/2)+1)/0xFFFF);
+            sprintf(ay,"Accel Y: %1.2f", (float)(accel_y + (0xFFFF/2)+1)/0xFFFF);
+            sprintf(az,"Accel Z: %1.2f", (float)(accel_z + (0xFFFF/2)+1)/0xFFFF);
+            sprintf(gx,"Gyro X: %1.2f", (float)(gyro_x + (0xFFFF/2)+1)/0xFFFF);
+            sprintf(gy,"Gyro Y: %1.2f", (float)(gyro_y + (0xFFFF/2)+1)/0xFFFF);
+            sprintf(gz,"Gyro Z: %1.2f", (float)(gyro_z + (0xFFFF/2)+1)/0xFFFF);
                         
         }
         
         //LCD_clearScreen(WHITE);
         
-        LCD_drawString(10,10,ax,RED);
-        LCD_drawString(10,20,ay,BLUE);
-        LCD_drawString(10,30,az,GREEN);
-        LCD_drawString(10,50,gx,RED);
-        LCD_drawString(10,60,gy,BLUE);
-        LCD_drawString(10,70,gz,GREEN);
+        LCD_drawString(10,90,&tp,BLACK);
+        
+        LCD_drawString(10,10,&ax,RED);
+        LCD_drawString(10,20,&ay,BLUE);
+        LCD_drawString(10,30,&az,GREEN);
+        LCD_drawString(10,50,&gx,RED);
+        LCD_drawString(10,60,&gy,BLUE);
+        LCD_drawString(10,70,&gz,GREEN);
     
     }
 }

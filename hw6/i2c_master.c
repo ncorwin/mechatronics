@@ -5,6 +5,8 @@
 // Change I2C1 to the I2C channel you are using
 // I2C pins need pull-up resistors, 2k-10k
 
+unsigned char data[30];
+
 void i2c_master_setup(void) {
   
   ANSELBbits.ANSB2 = 0;
