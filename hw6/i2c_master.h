@@ -5,7 +5,7 @@
 #include <sys/attribs.h>  // __ISR macro
 
 #define EXPANDER 0x40
-#define IMU 0b1101011
+#define IMU 0x6B
 
 //extern char add; // make available for use in main function
 //extern char reg; 

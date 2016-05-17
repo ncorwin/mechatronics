@@ -111,7 +111,7 @@ unsigned char get_exp(int pin){
 void write_imu(unsigned char addr, unsigned char data){
    
     i2c_master_start();
-    i2c_master_send(IMU | 0);
+    i2c_master_send(IMU<<1 | 0);
     i2c_master_send(addr);
     i2c_master_send(data);
     i2c_master_stop();
