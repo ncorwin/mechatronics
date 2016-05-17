@@ -6,6 +6,12 @@
 //Global Variables
 signed short temp = 0, accel_x= 8000, accel_y=0, accel_z=0, gyro_x=0, gyro_y=0, gyro_z=0;
 
+void __ISR(_TIMER_2_VECTOR, IPL5SOFT) PWM(void){
+    OC1RS = 3000*(float)(accel_x + (0xFFFF/2) + 1)/0XFFFF; // OC1RS = 1500;
+    OC2RS = 3000*(float)(accel_y + (0xFFFF/2) + 1)/0xFFFF; // OC2RS = 1500;
+    IFS0bits.T2IF = 0;
+}
+
 int main() {
 
     // set the CP0 CONFIG register to indicate that kseg0 is cacheable (0x3)
@@ -21,26 +27,26 @@ int main() {
     TRISAbits.TRISA4 = 0; //Pin 12 is LED output
     TRISBbits.TRISB4 = 1; //Pin 11 is pushbutton input      
     LATAbits.LATA4 = 0;   //LED initilized off
-        
+    
+    initOC();
     i2c_master_setup();
     init_imu();
-    SPI1_init();
-    LCD_init();
+    //SPI1_init();
+    //LCD_init();
     
     __builtin_enable_interrupts();
     
-    LCD_clearScreen(WHITE);
+    //LCD_clearScreen(WHITE);
     
-    //char voltage1=0, chann=0;
-    //float spi_scale = 122.0;
-    unsigned char val = 0x00;
-    //int level = 0, i = 0;
+     _CP0_SET_COUNT(0);
     
-    signed short test1 = 2.75;
+    char voltage1=0, chann=0;
+    float spi_scale = 122.0;
+    unsigned char wave[1000], triangle[1000], val = 0x00;
+    int level = 0, i = 0;
+    char message[30];
     
-    //unsigned char data[30];
-    
-    unsigned char tp[100], ax[100], ay[100], az[100], gx[100], gy[100], gz[100];
+    //unsigned char tp[100], ax[100], ay[100], az[100], gx[100], gy[100], gz[100];
         
     while(1){
         
@@ -68,12 +74,12 @@ int main() {
             
             //sprintf(tp,"temp: %1.2f", (float)(temp + (0xFFFF/2)+1)/0xFFFF);
             
-            sprintf(ax,"Accel X: %1.2f", -2*9.81 + 9.81*4*(float)(accel_x + (0xFFFF/2)+1)/0xFFFF);
-            sprintf(ay,"Accel Y: %1.2f", -2*9.81 + 9.81*4*(float)(accel_y + (0xFFFF/2)+1)/0xFFFF);
-            sprintf(az,"Accel Z: %1.2f", -2*9.81 + 9.81*4*(float)(accel_z + (0xFFFF/2)+1)/0xFFFF);
-            sprintf(gx,"Gyro X: %1.2f", -2*9.81 + 9.81*4*(float)(gyro_x + (0xFFFF/2)+1)/0xFFFF);
-            sprintf(gy,"Gyro Y: %1.2f", -2*9.81 + 9.81*4*(float)(gyro_y + (0xFFFF/2)+1)/0xFFFF);
-            sprintf(gz,"Gyro Z: %1.2f", -2*9.81 + 9.81*4*(float)(gyro_z + (0xFFFF/2)+1)/0xFFFF);
+//            sprintf(ax,"Accel X: %1.2f", -2*9.81 + 9.81*4*(float)(accel_x + (0xFFFF/2)+1)/0xFFFF);
+//            sprintf(ay,"Accel Y: %1.2f", -2*9.81 + 9.81*4*(float)(accel_y + (0xFFFF/2)+1)/0xFFFF);
+//            sprintf(az,"Accel Z: %1.2f", -2*9.81 + 9.81*4*(float)(accel_z + (0xFFFF/2)+1)/0xFFFF);
+//            sprintf(gx,"Gyro X: %1.2f", -2*9.81 + 9.81*4*(float)(gyro_x + (0xFFFF/2)+1)/0xFFFF);
+//            sprintf(gy,"Gyro Y: %1.2f", -2*9.81 + 9.81*4*(float)(gyro_y + (0xFFFF/2)+1)/0xFFFF);
+//            sprintf(gz,"Gyro Z: %1.2f", -2*9.81 + 9.81*4*(float)(gyro_z + (0xFFFF/2)+1)/0xFFFF);
                         
         }
         
@@ -81,12 +87,12 @@ int main() {
         
         //LCD_drawString(10,90,&tp,BLACK);
         
-        LCD_drawString(10,10,&ax,RED);
-        LCD_drawString(10,20,&ay,BLUE);
-        LCD_drawString(10,30,&az,GREEN);
-        LCD_drawString(10,50,&gx,RED);
-        LCD_drawString(10,60,&gy,BLUE);
-        LCD_drawString(10,70,&gz,GREEN);
+//        LCD_drawString(10,10,&ax,RED);
+//        LCD_drawString(10,20,&ay,BLUE);
+//        LCD_drawString(10,30,&az,GREEN);
+//        LCD_drawString(10,50,&gx,RED);
+//        LCD_drawString(10,60,&gy,BLUE);
+//        LCD_drawString(10,70,&gz,GREEN);
     
     }
 }

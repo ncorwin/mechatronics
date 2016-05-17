@@ -37,5 +37,6 @@ void write_imu(unsigned char addr, unsigned char data);
 void I2C_multiread(char add, char reg, unsigned char * data, char len);
 void init_imu(void);
 unsigned char getWho();
+void initOC();
 
 #endif

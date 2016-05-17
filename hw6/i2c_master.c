@@ -154,3 +154,33 @@ unsigned char getWho(){
     return r;
     
 }
+
+void initOC(){
+    //***output pin config for OC1 and OC2 for PWM function
+    RPA0Rbits.RPA0R = 0b0101; // set OC1 to RPA0 (PIC pin # 2)
+    RPA1Rbits.RPA1R = 0b0101; // set OC2 to RPA1 (PIC pin # 3)
+    int sval = 1500;
+    // start T2 used for OC1 and OC2
+    T2CONbits.TCKPS = 4;     // Timer2 PReSc N=16 0b100
+	PR2 = 2999;              // period = (PR2+1) * N * 20.833 ns = 1000 us, 1 kHz
+	TMR2 = 0;                // initialize at 0
+	T2CONbits.ON = 1;        // turn on Timer2
+	//Output compare at OC1
+	OC1CONbits.OCM = 0b110;  	//PWM mode without fault pin; other OC1CON bits are defaults
+	OC1CONbits.OC32 = 0;		//use the 16 bit timer
+	OC1RS = sval;             	// duty cycle = OC1RS/(PR3+1) = 25%
+	OC1R = sval;              	// initialize before turning OC1 on; afterward it is read-only
+	OC1CONbits.OCTSEL = 0;  	//Use timer 2
+	OC1CONbits.ON = 1;       	// turn on OC1
+    //Output compare at OC2
+	OC2CONbits.OCM = 0b110;  	//PWM mode without fault pin; other OC1CON bits are defaults
+	OC2CONbits.OC32 = 0;		//use the 16 bit timer
+	OC2RS = sval;             	// duty cycle = OC1RS/(PR3+1) = 25%
+	OC2R = sval;              	// initialize before turning OC1 on; afterward it is read-only
+	OC2CONbits.OCTSEL = 0;  	//Use timer 2
+	OC2CONbits.ON = 1;       	// turn on OC2
+    //SET Interrupt for TIMER2
+  	IPC2bits.T2IP = 5;            // interrupt priority default sub
+	IFS0bits.T2IF = 0;            // clear the int flag
+	IEC0bits.T2IE = 1;            // enable T2 as interrupt by setting IEC0
+}
