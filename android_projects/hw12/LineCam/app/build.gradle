@@ -6,8 +6,8 @@ android {
 
     defaultConfig {
         applicationId "com.me433_hw12.ncorwin.linecam"
-        minSdkVersion 23
-        targetSdkVersion 23
+        minSdkVersion 19
+        targetSdkVersion 19
         versionCode 1
         versionName "1.0"
     }
@@ -16,6 +16,9 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+    }
+    sourceSets {
+        main.java.srcDirs += '~/Documents/Mechatronics/Advanced/android_projects/hw12/LineCam'
     }
 }
 
