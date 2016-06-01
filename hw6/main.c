@@ -4,7 +4,7 @@
 #include <math.h>
 
 //Global Variables
-signed short temp = 0, accel_x= 8000, accel_y=0, accel_z=0, gyro_x=0, gyro_y=0, gyro_z=0;
+signed short temp = 0, accel_x= 0, accel_y=0, accel_z=0, gyro_x=0, gyro_y=0, gyro_z=0;
 
 //void __ISR(_TIMER_2_VECTOR, IPL5SOFT) PWM(void){
 //    OC1RS = 3000*(float)(accel_x + (0xFFFF/2) + 1)/0XFFFF; // OC1RS = 1500;

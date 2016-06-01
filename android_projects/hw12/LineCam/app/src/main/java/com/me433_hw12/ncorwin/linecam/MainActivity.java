@@ -97,6 +97,7 @@ public class MainActivity extends Activity implements TextureView.SurfaceTexture
                 // sum the red, green and blue, subtract from 255 to get the darkness of the pixel.
                 // if it is greater than some value (600 here), consider it black
                 // play with the 600 value if you are having issues reliably seeing the line
+                //if (255*3-(red(pixels[i])+green(pixels[i])+blue(pixels[i])) > 600) {
                 if (255*3-(red(pixels[i])+green(pixels[i])+blue(pixels[i])) > 600) {
                     thresholdedPixels[i] = 255*3;
                 }
