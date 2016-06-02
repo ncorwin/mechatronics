@@ -4,6 +4,7 @@ package com.me433_hw12.ncorwin.linecam;
 import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.SurfaceTexture;
 import android.hardware.Camera;
@@ -17,6 +18,9 @@ import java.io.IOException;
 import static android.graphics.Color.blue;
 import static android.graphics.Color.green;
 import static android.graphics.Color.red;
+import android.widget.SeekBar;
+import android.widget.SeekBar.OnSeekBarChangeListener;
+import android.widget.TextView;
 
 public class MainActivity extends Activity implements TextureView.SurfaceTextureListener {
     private Camera mCamera;
@@ -28,7 +32,19 @@ public class MainActivity extends Activity implements TextureView.SurfaceTexture
     private Paint paint1 = new Paint();
     private TextView mTextView;
 
+    SeekBar redThresh;
+    SeekBar greenThresh;
+    SeekBar blueThresh;
+
+    TextView redText;
+    TextView greenText;
+    TextView blueText;
+
     static long prevtime = 0; // for FPS calculation
+
+    static int redVal = 0;
+    static int greenVal = 0;
+    static int blueVal = 0;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,13 +61,95 @@ public class MainActivity extends Activity implements TextureView.SurfaceTexture
 
         paint1.setColor(0xffff0000); // red
         paint1.setTextSize(24);
+
+        redThresh = (SeekBar) findViewById(R.id.seekRed);
+
+        redText = (TextView) findViewById(R.id.textRed);
+        redText.setText("Red Threshold");
+
+        greenThresh = (SeekBar) findViewById(R.id.seekGreen);
+
+        greenText = (TextView) findViewById(R.id.textGreen);
+        greenText.setText("Green Threshold");
+
+        blueThresh = (SeekBar) findViewById(R.id.seekBlue);
+
+        blueText = (TextView) findViewById(R.id.textBlue);
+        blueText.setText("Blue Threshold");
+
+        setMyControlListener();
+    }
+
+    private void setMyControlListener() {
+        redThresh.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
+
+            int progressChangedRed = 0;
+
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progressRed, boolean fromUser) {
+                progressChangedRed = progressRed;
+                redText.setText("Red Threshold value: "+progressRed*2.55);
+                redVal = progressRed;
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
+
+        greenThresh.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
+
+            int progressChangedGreen = 0;
+
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progressGreen, boolean fromUser) {
+                progressChangedGreen = progressGreen;
+                greenText.setText("Green Threshold value: "+progressGreen*2.55);
+                greenVal = progressGreen;
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
+
+        blueThresh.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
+
+            int progressChangedBlue = 0;
+
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progressBlue, boolean fromUser) {
+                progressChangedBlue = progressBlue;
+                blueText.setText("Blue Threshold value: "+progressBlue*2.55);
+                blueVal = progressBlue;
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
     }
 
     public void onSurfaceTextureAvailable(SurfaceTexture surface, int width, int height) {
         mCamera = Camera.open();
         Camera.Parameters parameters = mCamera.getParameters();
         parameters.setPreviewSize(640, 480);
-        parameters.setColorEffect(Camera.Parameters.EFFECT_MONO); // black and white
+        parameters.setColorEffect(Camera.Parameters.EFFECT_NONE); // black and white
         parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_INFINITY); // no autofocusing
         mCamera.setParameters(parameters);
         mCamera.setDisplayOrientation(90); // rotate to portrait mode
@@ -91,15 +189,17 @@ public class MainActivity extends Activity implements TextureView.SurfaceTexture
             // instead of doing center of mass on it, decide if each pixel is dark enough to consider black or white
             // then do a center of mass on the thresholded array
             int[] thresholdedPixels = new int[bmp.getWidth()];
+            int[] thresholdedColors = new int[bmp.getWidth()];
             int wbTotal = 0; // total mass
             int wbCOM = 0; // total (mass time position)
             for (int i = 0; i < bmp.getWidth(); i++) {
                 // sum the red, green and blue, subtract from 255 to get the darkness of the pixel.
                 // if it is greater than some value (600 here), consider it black
                 // play with the 600 value if you are having issues reliably seeing the line
-                //if (255*3-(red(pixels[i])+green(pixels[i])+blue(pixels[i])) > 600) {
-                if (255*3-(red(pixels[i])+green(pixels[i])+blue(pixels[i])) > 600) {
+                //if (255*3-(red(pixels[i])+green(pixels[i])+blue(pixels[i])) > redVal+greenVal+blueVal) {
+                if ((red(pixels[i]) > redVal) && (green(pixels[i]) > greenVal) && (blue(pixels[i]) > blueVal)) {
                     thresholdedPixels[i] = 255*3;
+                    thresholdedColors[i] = Color.rgb(redVal, greenVal, blueVal);
                 }
                 else {
                     thresholdedPixels[i] = 0;
@@ -118,6 +218,7 @@ public class MainActivity extends Activity implements TextureView.SurfaceTexture
 
             // draw a circle where you think the COM is
             canvas.drawCircle(COM, startY, 5, paint1);
+            bmp.setPixels(thresholdedColors, 0, bmp.getWidth(), 0, startY, bmp.getWidth(), 1);
 
             // also write the value as text
             canvas.drawText("COM = " + COM, 10, 200, paint1);
