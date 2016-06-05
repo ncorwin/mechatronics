@@ -141,8 +141,8 @@ public class DeviceListActivity extends Activity {
                 }
 
                 final UsbSerialPort port = mEntries.get(position);
-                //showConsoleActivity(port);
-                showMainActivity(port);
+                showConsoleActivity(port);
+                //showMainActivity(port);
             }
         });
     }
