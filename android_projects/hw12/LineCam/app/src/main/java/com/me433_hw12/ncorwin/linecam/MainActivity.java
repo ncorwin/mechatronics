@@ -42,9 +42,9 @@ public class MainActivity extends Activity implements TextureView.SurfaceTexture
 
     static long prevtime = 0; // for FPS calculation
 
-    static int redVal = 0;
-    static int greenVal = 0;
-    static int blueVal = 0;
+    static double redVal = 0;
+    static double greenVal = 0;
+    static double blueVal = 0;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -88,8 +88,8 @@ public class MainActivity extends Activity implements TextureView.SurfaceTexture
             @Override
             public void onProgressChanged(SeekBar seekBar, int progressRed, boolean fromUser) {
                 progressChangedRed = progressRed;
-                redText.setText("Red Threshold value: "+progressRed*2.55);
-                redVal = progressRed;
+                redVal = progressRed*2.55;
+                redText.setText("Red Threshold value: "+redVal);
             }
 
             @Override
@@ -109,8 +109,8 @@ public class MainActivity extends Activity implements TextureView.SurfaceTexture
             @Override
             public void onProgressChanged(SeekBar seekBar, int progressGreen, boolean fromUser) {
                 progressChangedGreen = progressGreen;
-                greenText.setText("Green Threshold value: "+progressGreen*2.55);
-                greenVal = progressGreen;
+                greenVal = progressGreen*2.55;
+                greenText.setText("Green Threshold value: "+greenVal);
             }
 
             @Override
@@ -130,8 +130,9 @@ public class MainActivity extends Activity implements TextureView.SurfaceTexture
             @Override
             public void onProgressChanged(SeekBar seekBar, int progressBlue, boolean fromUser) {
                 progressChangedBlue = progressBlue;
-                blueText.setText("Blue Threshold value: "+progressBlue*2.55);
-                blueVal = progressBlue;
+                blueVal = progressBlue*2.55;
+                blueText.setText("Blue Threshold value: "+blueVal);
+
             }
 
             @Override
@@ -199,7 +200,7 @@ public class MainActivity extends Activity implements TextureView.SurfaceTexture
                 //if (255*3-(red(pixels[i])+green(pixels[i])+blue(pixels[i])) > redVal+greenVal+blueVal) {
                 if ((red(pixels[i]) > redVal) && (green(pixels[i]) > greenVal) && (blue(pixels[i]) > blueVal)) {
                     thresholdedPixels[i] = 255*3;
-                    thresholdedColors[i] = Color.rgb(redVal, greenVal, blueVal);
+                    thresholdedColors[i] = Color.rgb((int)redVal, (int)greenVal, (int)blueVal);
                 }
                 else {
                     thresholdedPixels[i] = 0;
