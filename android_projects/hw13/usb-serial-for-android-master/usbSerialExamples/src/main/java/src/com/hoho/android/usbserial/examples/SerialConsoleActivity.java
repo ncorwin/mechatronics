@@ -19,7 +19,7 @@
  * Project home page: https://github.com/mik3y/usb-serial-for-android
  */
 
-package com.hoho.android.usbserial.examples;
+package src.com.hoho.android.usbserial.examples;
 
 import android.app.Activity;
 import android.content.Context;
@@ -32,9 +32,11 @@ import android.view.WindowManager;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ScrollView;
+import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.hoho.android.usbserial.driver.UsbSerialPort;
+import com.hoho.android.usbserial.examples.R;
 import com.hoho.android.usbserial.util.HexDump;
 import com.hoho.android.usbserial.util.SerialInputOutputManager;
 
@@ -70,6 +72,9 @@ public class SerialConsoleActivity extends Activity {
     private CheckBox chkDTR;
     private CheckBox chkRTS;
 
+    SeekBar ledSeek;
+    TextView ledText;
+
     private final ExecutorService mExecutor = Executors.newSingleThreadExecutor();
 
     private SerialInputOutputManager mSerialIoManager;
@@ -104,6 +109,9 @@ public class SerialConsoleActivity extends Activity {
         chkDTR = (CheckBox) findViewById(R.id.checkBoxDTR);
         chkRTS = (CheckBox) findViewById(R.id.checkBoxRTS);
 
+        ledText = (TextView) findViewById(R.id.picText);
+        ledSeek = (SeekBar) findViewById(R.id.ledBar);
+
         chkDTR.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -122,6 +130,31 @@ public class SerialConsoleActivity extends Activity {
             }
         });
 
+        setMyControlListener();
+
+    }
+
+    private void setMyControlListener() {
+        ledSeek.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+
+            int progressChanged = 0;
+
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                progressChanged = progress;
+                sendData(progressChanged);
+                ledText.setText("LED: " +progressChanged);
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
     }
 
 
@@ -214,12 +247,12 @@ public class SerialConsoleActivity extends Activity {
                 + HexDump.dumpHexString(data) + "\n\n";
         mDumpTextView.append(message);
         mScrollView.smoothScrollTo(0, mDumpTextView.getBottom());
-        int i = 1; int j = 2; // the two numbers to send
-        String sendString = String.valueOf(i) + " " + String.valueOf(j);
-        try {
-            sPort.write(sendString.getBytes(),10); // 10 is the timeout (error)
-        }
-        catch (IOException e) {}
+//        int i = 1; int j = 2; // the two numbers to send
+//        String sendString = String.valueOf(i) + " " + String.valueOf(j);
+//        try {
+//            sPort.write(sendString.getBytes(),10); // 10 is the timeout (error)
+//        }
+//        catch (IOException e) {}
     }
 
     /**
@@ -233,6 +266,15 @@ public class SerialConsoleActivity extends Activity {
         final Intent intent = new Intent(context, SerialConsoleActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_NO_HISTORY);
         context.startActivity(intent);
+    }
+
+    private void sendData(int data) {
+
+        String sendString = String.valueOf(data) + " \n";
+        try {
+            sPort.write(sendString.getBytes(),10); // 10 is the timeout (error)
+        }
+        catch (IOException e) {}
     }
 
 }

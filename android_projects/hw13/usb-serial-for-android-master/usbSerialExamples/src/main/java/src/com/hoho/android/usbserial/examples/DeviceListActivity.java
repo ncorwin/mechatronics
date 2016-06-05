@@ -19,7 +19,7 @@
  * Project home page: https://github.com/mik3y/usb-serial-for-android
  */
 
-package com.hoho.android.usbserial.examples;
+package src.com.hoho.android.usbserial.examples;
 
 import android.app.Activity;
 import android.content.Context;
@@ -46,6 +46,7 @@ import com.hoho.android.usbserial.driver.ProbeTable;
 import com.hoho.android.usbserial.driver.UsbSerialDriver;
 import com.hoho.android.usbserial.driver.UsbSerialPort;
 import com.hoho.android.usbserial.driver.UsbSerialProber;
+import com.hoho.android.usbserial.examples.R;
 import com.hoho.android.usbserial.util.HexDump;
 
 import java.util.ArrayList;
@@ -207,7 +208,7 @@ public class DeviceListActivity extends Activity {
     }
 
     private void showConsoleActivity(UsbSerialPort port) {
-        com.hoho.android.usbserial.examples.SerialConsoleActivity.show(this, port);
+        src.com.hoho.android.usbserial.examples.SerialConsoleActivity.show(this, port);
     }
 
 }
