@@ -115,6 +115,7 @@ public class SerialConsoleActivity extends Activity implements TextureView.Surfa
     private CheckBox chkRTS;
 
     private CheckBox ckRace;
+    //private CheckBox ckLight;
 
     SeekBar redThresh;
     SeekBar greenThresh;
@@ -131,6 +132,9 @@ public class SerialConsoleActivity extends Activity implements TextureView.Surfa
     static double redVal = 0;
     static double greenVal = 0;
     static double blueVal = 0;
+
+    static int oldCOM1 = 0;
+    static int oldCOM2 = 0;
 
     private final ExecutorService mExecutor = Executors.newSingleThreadExecutor();
 
@@ -175,6 +179,7 @@ public class SerialConsoleActivity extends Activity implements TextureView.Surfa
         paint1.setTextSize(24);
 
         ckRace = (CheckBox) findViewById(R.id.raceStart);
+        //ckLight = (CheckBox) findViewById(R.id.checkLight);
 
         redThresh = (SeekBar) findViewById(R.id.seekRed);
 
@@ -227,7 +232,7 @@ public class SerialConsoleActivity extends Activity implements TextureView.Surfa
             @Override
             public void onProgressChanged(SeekBar seekBar, int progressRed, boolean fromUser) {
                 progressChangedRed = progressRed;
-                redVal = progressRed*2.55;
+                redVal = progressRed;
                 redText.setText("Red Threshold value: "+redVal);
             }
 
@@ -248,7 +253,7 @@ public class SerialConsoleActivity extends Activity implements TextureView.Surfa
             @Override
             public void onProgressChanged(SeekBar seekBar, int progressGreen, boolean fromUser) {
                 progressChangedGreen = progressGreen;
-                greenVal = progressGreen*2.55;
+                greenVal = progressGreen;
                 greenText.setText("Green Threshold value: "+greenVal);
             }
 
@@ -269,7 +274,7 @@ public class SerialConsoleActivity extends Activity implements TextureView.Surfa
             @Override
             public void onProgressChanged(SeekBar seekBar, int progressBlue, boolean fromUser) {
                 progressChangedBlue = progressBlue;
-                blueVal = progressBlue*2.55;
+                blueVal = progressBlue;
                 blueText.setText("Blue Threshold value: "+blueVal);
 
             }
@@ -288,6 +293,12 @@ public class SerialConsoleActivity extends Activity implements TextureView.Surfa
     public void onSurfaceTextureAvailable(SurfaceTexture surface, int width, int height) {
         mCamera = Camera.open();
         Camera.Parameters parameters = mCamera.getParameters();
+//        if (ckLight.isChecked()) {
+//            parameters.setFlashMode(Camera.Parameters.FLASH_MODE_TORCH);
+//        }
+//        else {
+//            parameters.setFlashMode(Camera.Parameters.FLASH_MODE_OFF);
+//        }
         parameters.setPreviewSize(640, 480);
         parameters.setColorEffect(Camera.Parameters.EFFECT_NONE); // black and white
         parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_INFINITY); // no autofocusing
@@ -321,9 +332,9 @@ public class SerialConsoleActivity extends Activity implements TextureView.Surfa
         if (c != null) {
 
             int[] pixels = new int[bmp.getWidth()];
-            int startY = 15; // which row in the bitmap to analyse to read
+            int startY1 = 15; // which row in the bitmap to analyse to read
             // only look at one row in the image
-            bmp.getPixels(pixels, 0, bmp.getWidth(), 0, startY, bmp.getWidth(), 1); // (array name, offset inside array, stride (size of row), start x, start y, num pixels to read per row, num rows to read)
+            bmp.getPixels(pixels, 0, bmp.getWidth(), 0, startY1, bmp.getWidth(), 1); // (array name, offset inside array, stride (size of row), start x, start y, num pixels to read per row, num rows to read)
 
             // pixels[] is the RGBA data (in black an white).
             // instead of doing center of mass on it, decide if each pixel is dark enough to consider black or white
@@ -337,7 +348,7 @@ public class SerialConsoleActivity extends Activity implements TextureView.Surfa
                 // if it is greater than some value (600 here), consider it black
                 // play with the 600 value if you are having issues reliably seeing the line
                 //if (255*3-(red(pixels[i])+green(pixels[i])+blue(pixels[i])) > redVal+greenVal+blueVal) {
-                if ((red(pixels[i]) > redVal) && (green(pixels[i]) > greenVal) && (blue(pixels[i]) > blueVal)) {
+                if ((red(pixels[i]) > redVal) && (green(pixels[i]) < greenVal) && (blue(pixels[i]) < blueVal)) {
                     thresholdedPixels[i] = 255*3;
                     thresholdedColors[i] = Color.rgb((int)redVal, (int)greenVal, (int)blueVal);
                 }
@@ -347,29 +358,84 @@ public class SerialConsoleActivity extends Activity implements TextureView.Surfa
                 wbTotal = wbTotal + thresholdedPixels[i];
                 wbCOM = wbCOM + thresholdedPixels[i]*i;
             }
-            int COM;
+            int COM1;
             //watch out for divide by 0
             if (wbTotal<=0) {
-                COM = bmp.getWidth()/2;
+                //COM1 = bmp.getWidth()/2;
+                COM1 = oldCOM1;
             }
             else {
-                COM = wbCOM/wbTotal;
+                COM1 = wbCOM/wbTotal;
+                oldCOM1 = COM1;
             }
 
+
+            int startY2 = 350;
+            bmp.getPixels(pixels, 0, bmp.getWidth(), 0, startY2, bmp.getWidth(), 1); // (array name, offset inside array, stride (size of row), start x, start y, num pixels to read per row, num rows to read)
+            thresholdedPixels = new int[bmp.getWidth()];
+            thresholdedColors = new int[bmp.getWidth()];
+            wbTotal = 0; // total mass
+            wbCOM = 0; // total (mass time position)
+            for (int i = 0; i < bmp.getWidth(); i++) {
+                // sum the red, green and blue, subtract from 255 to get the darkness of the pixel.
+                // if it is greater than some value (600 here), consider it black
+                // play with the 600 value if you are having issues reliably seeing the line
+                //if (255*3-(red(pixels[i])+green(pixels[i])+blue(pixels[i])) > redVal+greenVal+blueVal) {
+                if ((red(pixels[i]) > redVal) && (green(pixels[i]) < greenVal) && (blue(pixels[i]) < blueVal)) {
+                    thresholdedPixels[i] = 255*3;
+                    thresholdedColors[i] = Color.rgb((int)redVal, (int)greenVal, (int)blueVal);
+                }
+                else {
+                    thresholdedPixels[i] = 0;
+                }
+                wbTotal = wbTotal + thresholdedPixels[i];
+                wbCOM = wbCOM + thresholdedPixels[i]*i;
+            }
+            int COM2;
+            //watch out for divide by 0
+            if (wbTotal<=0) {
+                //COM2 = bmp.getWidth()/2;
+                COM2 = oldCOM2;
+            }
+            else {
+                COM2 = wbCOM/wbTotal;
+                oldCOM2 = COM2;
+            }
+
+
+            int data1 = (COM1*100)/bmp.getWidth();
+            int data2 = (COM2*100)/bmp.getWidth();
+
             // draw a circle where you think the COM is
-            canvas.drawCircle(COM, startY, 5, paint1);
-            bmp.setPixels(thresholdedColors, 0, bmp.getWidth(), 0, startY, bmp.getWidth(), 1);
+            canvas.drawCircle(COM1, startY1, 5, paint1);
+            canvas.drawCircle(COM2, startY2, 5, paint1);
+            //bmp.setPixels(thresholdedColors, 0, bmp.getWidth(), 0, startY, bmp.getWidth(), 1);
 
             // also write the value as text
-            canvas.drawText("COM = " + COM, 10, 200, paint1);
+            canvas.drawText("COM1 = " + data1, 10, 150, paint1);
+            canvas.drawText("COM2 = " + data2, 10, 350, paint1);
             c.drawBitmap(bmp, 0, 0, null);
             mSurfaceHolder.unlockCanvasAndPost(c);
 
             if (ckRace.isChecked()) {
-                sendData(COM);
+                int diff = COM1 - COM2;
+
+
+                if (Math.abs(diff) < 110) {
+                    data1= data1; //Strait Line Following state
+                }
+                else {
+                    if (((COM1 < 320) && (diff < 0)) || ((COM1 >= 320) && (diff >= 0))) {
+                        data1 = data1 + 100; //Sharp Turn state
+                    }
+                    else {
+                        data1 = data1 + 200; //Line Reaquire state
+                    }
+                }
+                sendData(data1);
             }
             else {
-                sendData(0);
+                sendData(-1);
             }
 
             // calculate the FPS to see how fast the code is running

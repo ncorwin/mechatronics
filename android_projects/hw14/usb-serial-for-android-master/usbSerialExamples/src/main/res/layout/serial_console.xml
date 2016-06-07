@@ -55,12 +55,13 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_margin="1dp"
-            android:progress="20"
+            android:progress="65"
             android:secondaryProgress="20"
             android:paddingTop="@dimen/activity_vertical_margin"
             android:paddingBottom="@dimen/activity_vertical_margin"
             android:indeterminateOnly="false"
-            android:indeterminate="false" />
+            android:indeterminate="false"
+            android:max="255" />
 
         <TextView
             android:id="@+id/textGreen"
@@ -72,11 +73,13 @@
             android:id="@+id/seekGreen"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:progress="0"
+            android:progress="220"
             android:secondaryProgress="20"
             android:paddingTop="@dimen/activity_vertical_margin"
             android:paddingBottom="@dimen/activity_vertical_margin"
-            android:layout_margin="1dp" />
+            android:layout_margin="1dp"
+            android:max="255"
+            android:indeterminate="false" />
 
         <TextView
             android:id="@+id/textBlue"
@@ -89,11 +92,13 @@
             android:id="@+id/seekBlue"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:progress="0"
+            android:progress="205"
             android:secondaryProgress="20"
             android:paddingTop="@dimen/activity_vertical_margin"
             android:paddingBottom="@dimen/activity_vertical_margin"
-            android:layout_margin="1dp" />
+            android:layout_margin="1dp"
+            android:max="255"
+            android:indeterminate="false" />
 
         <TextView
             android:id="@+id/demoTitle"
