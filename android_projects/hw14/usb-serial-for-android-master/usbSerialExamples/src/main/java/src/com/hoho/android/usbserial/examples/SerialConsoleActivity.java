@@ -133,8 +133,8 @@ public class SerialConsoleActivity extends Activity implements TextureView.Surfa
     static double greenVal = 0;
     static double blueVal = 0;
 
-    static int oldCOM1 = 0;
-    static int oldCOM2 = 0;
+    static int oldCOM1 = 320;
+    static int oldCOM2 = 320;
 
     private final ExecutorService mExecutor = Executors.newSingleThreadExecutor();
 
@@ -299,6 +299,7 @@ public class SerialConsoleActivity extends Activity implements TextureView.Surfa
 //        else {
 //            parameters.setFlashMode(Camera.Parameters.FLASH_MODE_OFF);
 //        }
+        //parameters.setFlashMode(Camera.Parameters.FLASH_MODE_TORCH);
         parameters.setPreviewSize(640, 480);
         parameters.setColorEffect(Camera.Parameters.EFFECT_NONE); // black and white
         parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_INFINITY); // no autofocusing
@@ -421,7 +422,7 @@ public class SerialConsoleActivity extends Activity implements TextureView.Surfa
                 int diff = COM1 - COM2;
 
 
-                if (Math.abs(diff) < 110) {
+                if (Math.abs(diff) < 90) {
                     data1= data1; //Strait Line Following state
                 }
                 else {
